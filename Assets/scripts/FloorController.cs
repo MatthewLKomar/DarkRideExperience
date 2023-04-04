@@ -114,7 +114,6 @@ public class FloorController : MonoBehaviour {
     public void moveAll(float voltage) {
         // for all four bladders set the provided voltage (translates to height) in a range of 0.0F - 10.0F
         for (int i = 0; i < 4; i++) {
-            //motionFloor.outputs[i].Voltage = voltage;
             targetPos[i] = voltage;
         }
         SetDir();
@@ -122,30 +121,18 @@ public class FloorController : MonoBehaviour {
 
     public void raiseFront(float voltage) {
         // raise the bladders on the front side of the floor to the provided voltage and fully lower the bladders on the back side
-        //motionFloor.outputs[2].Voltage = voltage;
-        //motionFloor.outputs[3].Voltage = voltage;
-        //motionFloor.outputs[0].Voltage = 0.0F;
-        //motionFloor.outputs[1].Voltage = 0.0F;
         targetPos = new Vector4(0f, 0f, voltage, voltage);
         SetDir();
     }
 
     public void raiseBack(float voltage) {
         // raise the bladders on the back side of the floor to the provided voltage and fully lower the bladders on the front side
-        //motionFloor.outputs[0].Voltage = voltage;
-        //motionFloor.outputs[1].Voltage = voltage;
-        //motionFloor.outputs[2].Voltage = 0.0F;
-        //motionFloor.outputs[3].Voltage = 0.0F;
         targetPos = new Vector4(voltage, voltage, 0f, 0f);
         SetDir();
     }
 
     public void raiseRight(float voltage) {
         // raise the bladders on the right side of the floor to the provided voltage and fully lower the bladders on the left side
-        //motionFloor.outputs[1].Voltage = voltage;
-        //motionFloor.outputs[3].Voltage = voltage;
-        //motionFloor.outputs[0].Voltage = 0.0F;
-        //motionFloor.outputs[2].Voltage = 0.0F;
         targetPos = new Vector4(0f, voltage, 0f, voltage);
         print("right");
         SetDir();
@@ -153,10 +140,6 @@ public class FloorController : MonoBehaviour {
 
     public void raiseLeft(float voltage) {
         // raise the bladders on the left side of the floor to the provided voltage and fully lower the bladders on the right side
-        //motionFloor.outputs[0].Voltage = voltage;
-        //motionFloor.outputs[2].Voltage = voltage;
-        //motionFloor.outputs[1].Voltage = 0.0F;
-        //motionFloor.outputs[3].Voltage = 0.0F;
         targetPos = new Vector4(voltage, 0f, voltage, 0f);
         print("left");
         SetDir();
@@ -164,21 +147,8 @@ public class FloorController : MonoBehaviour {
     
     public void SinFloor(float front_voltage, float back_voltage)
     {
-        //float front_voltage = 9.0f;
-        //float back_voltage = 0.0f;
-        //while (front_voltage > 0.0f)
-        //{
-            targetPos = new Vector4(front_voltage, front_voltage, back_voltage, back_voltage);
-            SetDir();
-            //yield return new WaitForSeconds(5);
-        //}
-        /*
-        System.Threading.Thread.Sleep(500);
-        targetPos = new Vector4(0f, 0f, voltage, voltage);
+        targetPos = new Vector4(front_voltage, front_voltage, back_voltage, back_voltage);
         SetDir();
-        System.Threading.Thread.Sleep(500);
-        lowerFloor();
-        */
     }
     /*
     public void SinFloor()

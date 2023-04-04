@@ -107,9 +107,6 @@ public class CameraMovement2 : MonoBehaviour {
             ///node.transform.Translate(Vector3.up * up * Time.deltaTime * 15.0f);     // rcc - add in rise and fall
             node.transform.Rotate(Vector3.up, turn * Time.deltaTime * 25.0f);
         }
-        // rcc - cap the sub vertical height
-        ///if (node.transform.position.y > subHighCutoff) { node.transform.position = new Vector3(node.transform.position.x, subHighCutoff, node.transform.position.z); }
-
     }
 
     void Position()
@@ -130,11 +127,6 @@ public class CameraMovement2 : MonoBehaviour {
         }
         // rcc - add in upward movement
         up = 0.0f;
-        ///if (rise) up = upwardSpeed;
-        ///if (fall) up = upwardSpeed * -1.0f;
-
-        //Debug.Log("turn: " + turn + "   forward: " + forward);
-
         if (forward > 0.0f || turn != 0.0f) {
             // moving so play move sound
             if (audio.clip != moveSFX) {
@@ -209,9 +201,9 @@ public class CameraMovement2 : MonoBehaviour {
         useFloor = value;
     }
 
+    // Parse input from Controller
     public void ButtonHit(string name) {
-        // a joystick button has been hit
-        print(name);
+        
         switch (name) {
             case "P1-A":
                 // vertical movement - RCC no longer using
@@ -219,80 +211,60 @@ public class CameraMovement2 : MonoBehaviour {
                 break;
             case "P1-B":
                 // do something
-
                 break;
             case "P1-Y":
                 // do something
-                
                 break;
             case "P1-X":
                 // do something
-
                 break;
             case "P1-LeftBumper":
                 // do something
-
                 break;
             case "P1-RightBumper":
                 // do something
-
                 break;
             case "P1-Back":
                 // do something
-
                 break;
             case "P1-Start":
                 // do something
-
                 break;
             case "P1-LeftStick":
                 // do something
-
                 break;
             case "P1-RightStick":
                 // do something
-
                 break;
-
             case "P2-A":
                 // vertical movement - RCC no longer using
-                ///if (canFall) fall = true;
                 break;
             case "P2-B":
                 // do something
-
                 break;
             case "P2-Y":
                 // do something
-                
                 break;
             case "P2-X":
                 // do something
-
                 break;
             case "P2-LeftBumper":
                 // do something
-
                 break;
             case "P2-RightBumper":
                 // do something
-
                 break;
             case "P2-Back":
                 // do something
-
                 break;
             case "P2-Start":
                 // do something
-
                 break;
             case "P2-LeftStick":
                 // do something
-
                 break;
             case "P2-RightStick":
                 // do something
-
                 break;
 
         }

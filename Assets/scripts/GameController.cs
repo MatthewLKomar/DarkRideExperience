@@ -119,8 +119,6 @@ public class GameController : MonoBehaviour {
             case "Trigger-First":
                 tc.TriggerEvent("Trigger #3 - hit first trigger");
                 break;
-
-
             case "Waypoints-All Done":
                 tc.TriggerEvent("Trigger - All Done");
                 break;
