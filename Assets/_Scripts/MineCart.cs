@@ -13,7 +13,7 @@ public class MineCart : MonoBehaviour
     private Vector3 BackLastPosition;
     private Vector3 FrontCurrentPosition;
     private Vector3 BackCurrentPosition;
-
+    private float oldAngle = 0;
     void Start()
     {
         floor = FloorController.curr;
@@ -24,22 +24,34 @@ public class MineCart : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate() {
         RaycastHit hit;
-        
+
         // this should shoot a ray downwards... 
+        Debug.DrawRay(Front.position, transform.TransformDirection(Vector3.down));
         if (Physics.Raycast(Front.position, transform.TransformDirection(Vector3.down), out hit, 10.0f)) {
             FrontCurrentPosition = hit.point;
         }
+
+        Debug.DrawRay(Back.position, transform.TransformDirection(Vector3.down));
         if (Physics.Raycast(Back.position, transform.TransformDirection(Vector3.down), out hit, 10.0f)) {
             BackCurrentPosition = hit.point;
         }
 
-        //do calculations accordingly... 
-        // if the value to raie the floor hasn't changed since last frame
-            //return
-        // if we're going up, we'll have to move raise the ass end of the floor down, the front up. 
-        // if we're going down, we'll have to raise the ass end of the floor up, the front down. 
-        
-        
-    
+        var Angle = Vector3.Angle(BackCurrentPosition, FrontCurrentPosition);
+        if (Angle > oldAngle)
+        {
+            //wait what if we look at it from height instead? Just Z value??
+            print("we're going up, Angle:  " + Angle + " old Angle" + oldAngle);
+            //lower back
+            //raise front
+        }
+        else if (Angle < oldAngle)
+        {
+            print("we're going down, Angle:  " + Angle + " old Angle" + oldAngle);
+            //raise back
+            //lower front
+            //what if we map Angle (which will be in degrees) to (0, 5)??
+        }
+
+        oldAngle = Angle;
     }
 }
