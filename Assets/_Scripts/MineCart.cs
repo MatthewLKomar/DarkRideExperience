@@ -4,32 +4,52 @@ using UnityEngine;
 
 public class MineCart : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private FloorController floor = null;
+    
 
     public float LengthThreshold = 2.0f;
+    public float TimeToWaitBetweenFloorCommands = 0.5f;
+
     public Transform Front;
     public Transform Back;
+
+
+    private FloorController floor = null;
 
     private float FrontLastHeight;
     private float BackLastHeight;
     private float FrontCurrentHeight;
     private float BackCurrentHeight;
     private float LengthOfMinecart;
+    
+    private int Count = 0 ;
+    
+    private string Screenlog1 = "";
+    private string Screenlog2 = "";
+    private string Screenlog3 = "";
+
+
     float Remap(float value, float from1, float to1, float from2, float to2)
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
 
+    void OnGUI() {
+        GUILayout.Label(Screenlog1);
+        GUILayout.Label(Screenlog2);
+        GUILayout.Label(Screenlog3);
+    }
+
     void Start()
     {
         floor = FloorController.curr;
+        // if we can't to the floor for some reason, quit
         if (floor == null)
         {
-            floor.SetupFloor();
-            floor.raiseAll(5.0f);
+            print("can't connect to the floor!!");
+            return;
         }
-        
+
+        floor.SetupFloor();
 
         FrontCurrentHeight = Front.position.y;
         BackCurrentHeight = Back.position.y;
@@ -39,31 +59,68 @@ public class MineCart : MonoBehaviour
 
         LengthOfMinecart = Vector3.Distance(Front.position, Back.position);
         LengthOfMinecart /= LengthThreshold;
+
+        StartCoroutine(raiseFloor());
+
     }
 
     // Update is called once per frame
-    void FixedUpdate() {
-        if (floor == null)
-            return;
-        FrontCurrentHeight = Front.position.y;
-        BackCurrentHeight = Back.position.y;
-        
-        var frontHeight = Mathf.Abs(FrontCurrentHeight - FrontLastHeight);
-        var lastHeight = Mathf.Abs(BackCurrentHeight - BackLastHeight);
+    IEnumerator raiseFloor() {
+        while (true) {
+            FrontCurrentHeight = Front.position.y;
+            BackCurrentHeight = Back.position.y;
 
+            if (Count >= 3) {
 
+                float frontHeight = FrontCurrentHeight - FrontLastHeight;
+                float backHeight = BackCurrentHeight - BackLastHeight;
 
+                float backVoltage = 0.0f, frontVoltage = 0.0f;
+                if (frontHeight == backHeight) {
+                    floor.raiseAll(0);
+                    Screenlog1 = "Going Straight";
+                }
+                //if you're going down, lower front and don't touch it
+                else if (backHeight > frontHeight || (frontHeight < 0 && backHeight > 0)) {
+                    backVoltage = Remap(Mathf.Abs(backHeight), 0, 20, 0, 10);
+                    backVoltage = backVoltage > 10.0f ? 10.0f : backVoltage;
+                    Screenlog1 = "Going down";
+                    floor.raiseBack(backVoltage);
+                }
+                //if you're going up, lower back and don't touch it. 
+                else if (frontHeight > backHeight || (frontHeight > 0 && backHeight < 0)) 
+                {
+                    frontVoltage = Remap(Mathf.Abs(frontHeight), 0, 20, 0, 10);
+                    frontVoltage = frontVoltage > 10.0f ? 10.0f : frontVoltage;
+                    Screenlog1 = "Going up";
+                    floor.raiseFront(frontVoltage);
+                }
+                // you're leaning to the left...
+                
 
-        //compare height from front and back to last frame's
-        //then remap it 
-        var frontVoltage = Remap(frontHeight, 0, LengthOfMinecart, 0 , 10);
-        var backVoltage = Remap(lastHeight, 0, LengthOfMinecart, 0, 10);
+                //you're leaning to the right...
 
-        //print("front voltage: " + frontVoltage + " back Voltage: " + backVoltage + "front height " + frontHeight);
-        floor.raiseBack(backVoltage);
-        floor.raiseFront(frontVoltage);
+                
 
-        FrontLastHeight = FrontCurrentHeight;
-        BackLastHeight = BackCurrentHeight;
+                Screenlog2 = "Back Height: " + backHeight + " Front Height: " + frontHeight;
+                Screenlog3 = "back Voltage: " + backVoltage + " front voltage: " + frontVoltage;
+
+                print(Screenlog2);
+                print(Screenlog3);
+
+                //yield return new WaitForSeconds(0.1f);
+
+            }
+            else {
+                Count++;
+            }
+
+            FrontLastHeight = FrontCurrentHeight;
+            BackLastHeight = BackCurrentHeight;
+            
+            yield return new WaitForSeconds(TimeToWaitBetweenFloorCommands);
+
+        }
+
     }
 }
