@@ -11,15 +11,22 @@ public class MineCart : MonoBehaviour
 
     public Transform Front;
     public Transform Back;
+    public Transform Right;
+    public Transform Left;
+
 
 
     private FloorController floor = null;
 
+    //height Up/Down
+    private float MaxHeight = 20.0f;
     private float FrontLastHeight;
     private float BackLastHeight;
     private float FrontCurrentHeight;
     private float BackCurrentHeight;
-    private float LengthOfMinecart;
+    
+    
+    private float MaxSway = 10.0f;
     
     private int Count = 0 ;
     
@@ -57,9 +64,6 @@ public class MineCart : MonoBehaviour
         FrontLastHeight = FrontCurrentHeight;
         BackLastHeight = BackCurrentHeight;
 
-        LengthOfMinecart = Vector3.Distance(Front.position, Back.position);
-        LengthOfMinecart /= LengthThreshold;
-
         StartCoroutine(raiseFloor());
 
     }
@@ -82,7 +86,7 @@ public class MineCart : MonoBehaviour
                 }
                 //if you're going down, lower front and don't touch it
                 else if (backHeight > frontHeight || (frontHeight < 0 && backHeight > 0)) {
-                    backVoltage = Remap(Mathf.Abs(backHeight), 0, 20, 0, 10);
+                    backVoltage = Remap(Mathf.Abs(backHeight), 0, MaxHeight, 0, 10);
                     backVoltage = backVoltage > 10.0f ? 10.0f : backVoltage;
                     Screenlog1 = "Going down";
                     floor.raiseBack(backVoltage);
@@ -90,12 +94,12 @@ public class MineCart : MonoBehaviour
                 //if you're going up, lower back and don't touch it. 
                 else if (frontHeight > backHeight || (frontHeight > 0 && backHeight < 0)) 
                 {
-                    frontVoltage = Remap(Mathf.Abs(frontHeight), 0, 20, 0, 10);
+                    frontVoltage = Remap(Mathf.Abs(frontHeight), 0, MaxHeight, 0, 10);
                     frontVoltage = frontVoltage > 10.0f ? 10.0f : frontVoltage;
                     Screenlog1 = "Going up";
                     floor.raiseFront(frontVoltage);
                 }
-                // you're leaning to the left...
+                // you're leaning to the left..
                 
 
                 //you're leaning to the right...
