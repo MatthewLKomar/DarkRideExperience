@@ -100,7 +100,7 @@ public class FloorController : MonoBehaviour {
     }
 
     public void moveOne(int index, float voltage) { 
-        if (voltage > 10) voltage = 10.0f;
+        if (voltage > maxVoltage) voltage = maxVoltage;
         // set the voltage (translates to floor height) of the provided bladder to the provided voltage
         // voltage = 0.0F is fully lowered
         // voltage = 5.0F is raised halfway
@@ -127,7 +127,7 @@ public class FloorController : MonoBehaviour {
 
     public void raiseAll(float voltage) {
         // for all four bladders set the provided voltage (translates to height) in a range of 0.0F - 10.0F
-        if (voltage > 10) voltage = 10.0f;
+        if (voltage > maxVoltage) voltage = maxVoltage;
         for (int i = 0; i < 4; i++) {
             targetPos[i] = voltage;
         }
@@ -136,21 +136,21 @@ public class FloorController : MonoBehaviour {
 
     public void raiseFront(float voltage) {
         // raise the bladders on the front side of the floor to the provided voltage and fully lower the bladders on the back side
-        if (voltage > 10) voltage = 10.0f;
+        if (voltage > maxVoltage) voltage = maxVoltage;
         targetPos = new Vector4(0f, 0f, voltage, voltage);
         SetDir();
     }
 
     public void raiseBack(float voltage) {
         // raise the bladders on the back side of the floor to the provided voltage and fully lower the bladders on the front side
-        if (voltage > 10) voltage = 10.0f;
+        if (voltage > maxVoltage) voltage = maxVoltage;
         targetPos = new Vector4(voltage, voltage, 0f, 0f);
         SetDir();
     }
 
     public void raiseRight(float voltage) {
         // raise the bladders on the right side of the floor to the provided voltage and fully lower the bladders on the left side
-        if (voltage > 10) voltage = 10.0f;
+        if (voltage > maxVoltage) voltage = 10.0f;
         targetPos = new Vector4(0f, voltage, 0f, voltage);
         print("right");
         SetDir();
@@ -158,7 +158,7 @@ public class FloorController : MonoBehaviour {
 
     public void raiseLeft(float voltage) {
         // raise the bladders on the left side of the floor to the provided voltage and fully lower the bladders on the right side
-        if (voltage > 10) voltage = 10.0f;
+        if (voltage > maxVoltage) voltage = maxVoltage;
         targetPos = new Vector4(voltage, 0f, voltage, 0f);
         print("left");
         SetDir();
