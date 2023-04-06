@@ -13,7 +13,7 @@ public class MineCart : MonoBehaviour
     private Vector3 BackLastPosition;
     private Vector3 FrontCurrentPosition;
     private Vector3 BackCurrentPosition;
-    private float oldAngle = 0;
+    private float oldSlope = 0;
     void Start()
     {
         floor = FloorController.curr;
@@ -36,22 +36,8 @@ public class MineCart : MonoBehaviour
             BackCurrentPosition = hit.point;
         }
 
-        var Angle = Vector3.Angle(BackCurrentPosition, FrontCurrentPosition);
-        if (Angle > oldAngle)
-        {
-            //wait what if we look at it from height instead? Just Z value??
-            print("we're going up, Angle:  " + Angle + " old Angle" + oldAngle);
-            //lower back
-            //raise front
-        }
-        else if (Angle < oldAngle)
-        {
-            print("we're going down, Angle:  " + Angle + " old Angle" + oldAngle);
-            //raise back
-            //lower front
-            //what if we map Angle (which will be in degrees) to (0, 5)??
-        }
-
-        oldAngle = Angle;
+        //compare distance from front and back
+        //then remap it 
+    
     }
 }
