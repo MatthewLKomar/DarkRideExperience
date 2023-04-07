@@ -96,8 +96,11 @@ public class MineCart : MonoBehaviour
 
     }
 
-    float CalculateVoltage(float heightVal)
+    float CalculateVoltage(float heightVal, float maxVal)
     {
+        heightVal = Remap(Mathf.Abs(heightVal), 0, maxVal, 0, 10);
+        heightVal = heightVal > 10.0f ? 10.0f : heightVal;
+        return heightVal;
 
     }
 
@@ -125,8 +128,7 @@ public class MineCart : MonoBehaviour
                 // you're leaning to the right..
                 else if (leftHeight > rightHeight)
                 {
-                    rightVoltage = Remap(Mathf.Abs(rightHeight), 0, MaxSway, 0, 10);
-                    rightVoltage = rightVoltage > 10.0f ? 10.0f : rightVoltage;
+                    rightVoltage = CalculateVoltage(rightHeight, MaxSway);
                     cartState = CartState.right;
                     Screenlog1 = "Going Right";
                     //floor.raiseFront(rightVoltage);
@@ -134,8 +136,7 @@ public class MineCart : MonoBehaviour
                 //you're leaning to the left...
                 else if (rightHeight > leftHeight)
                 {
-                    leftVoltage = Remap(Mathf.Abs(leftHeight), 0, MaxSway, 0, 10);
-                    leftVoltage = leftVoltage > 10.0f ? 10.0f : leftVoltage;
+                    leftVoltage = CalculateVoltage(leftHeight, MaxSway);
                     cartState = CartState.left;
                     Screenlog1 = "Going Left";
                     //floor.raiseFront(leftVoltage);
@@ -143,8 +144,7 @@ public class MineCart : MonoBehaviour
                 //if you're going down, lower front and don't touch it
                 else if (backHeight > frontHeight || (frontHeight < 0 && backHeight > 0))
                 {
-                    backVoltage = Remap(Mathf.Abs(backHeight), 0, MaxHeight, 0, 10);
-                    backVoltage = backVoltage > 10.0f ? 10.0f : backVoltage;
+                    backVoltage = CalculateVoltage(backHeight, MaxHeight);
                     cartState = CartState.down;
                     Screenlog1 = "Going down";
                     //floor.raiseBack(backVoltage);
@@ -152,8 +152,7 @@ public class MineCart : MonoBehaviour
                 //if you're going up, lower back and don't touch it. 
                 else if (frontHeight > backHeight || (frontHeight > 0 && backHeight < 0))
                 {
-                    frontVoltage = Remap(Mathf.Abs(frontHeight), 0, MaxHeight, 0, 10);
-                    frontVoltage = frontVoltage > 10.0f ? 10.0f : frontVoltage;
+                    frontVoltage = CalculateVoltage(frontHeight, MaxHeight);
                     cartState = CartState.up;
                     Screenlog1 = "Going up";
                     //floor.raiseFront(frontVoltage);
