@@ -104,7 +104,17 @@ public class MineCart : MonoBehaviour
 
     }
 
-    // Update is called once per frame
+
+    //TODO: MLKomar: Issues with raiseFloor()
+    // If left and right are almost equal than keep the previous state/turning values.
+    // Sometimes left > right or vice versa and the program still thinks we're turning right. 
+    // Make additive platform raising i.e. be tilted up and to the left slightly. 
+
+
+    /// <summary>
+    /// Calculates which side of the platform to raise. 
+    /// </summary>
+    /// <returns></returns>
     IEnumerator raiseFloor() {
         while (true) {
             FrontCurrentHeight = Front.position.y;
@@ -157,10 +167,6 @@ public class MineCart : MonoBehaviour
                     Screenlog1 = "Going up";
                     //floor.raiseFront(frontVoltage);
                 }
-
-                
-
-
 
                 Screenlog2 = "Back Height: " + backHeight + " Front Height: " + frontHeight;
                 Screenlog3 = "back Voltage: " + backVoltage + " front voltage: " + frontVoltage;
