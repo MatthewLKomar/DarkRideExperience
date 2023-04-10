@@ -35,12 +35,13 @@ public class MineCart : MonoBehaviour
 
     private CartState cartState;
     //height left/right
-    private float MaxSway = 10.0f;
+    private float MaxSway = 3.0f;
     private float RightLastHeight;
     private float LeftLastHeight;
     private float RightCurrentHeight;
     private float LeftCurrentHeight;
-    
+
+    private Vector3 lastPosition;
     private int Count = 0 ;
     
     private string Screenlog1 = "";
@@ -48,6 +49,7 @@ public class MineCart : MonoBehaviour
     private string Screenlog3 = "";
     private string Screenlog4 = "";
     private string Screenlog5 = "";
+
 
 
     float Remap(float value, float from1, float to1, float from2, float to2)
@@ -67,15 +69,15 @@ public class MineCart : MonoBehaviour
 
     void Start()
     {
- /*       floor = FloorController.curr;
+        floor = FloorController.curr;
         // if we can't to the floor for some reason, quit
         if (floor == null)
         {
             print("can't connect to the floor!!");
             return;
-        }*/
+        }
 
-        //floor.SetupFloor();
+        floor.SetupFloor();
 
         FrontCurrentHeight = Front.position.y;
         BackCurrentHeight = Back.position.y;
@@ -127,32 +129,40 @@ public class MineCart : MonoBehaviour
 
                 float frontHeight = FrontCurrentHeight - FrontLastHeight;
                 float backHeight = BackCurrentHeight - BackLastHeight;
-                float leftHeight = LeftCurrentHeight - LeftLastHeight;
-                float rightHeight = RightCurrentHeight - RightLastHeight;
+                float leftHeight = Mathf.Ceil(LeftCurrentHeight - LeftLastHeight);
+                float rightHeight = Mathf.Ceil(RightCurrentHeight - RightLastHeight);
                 float backVoltage = 0.0f, frontVoltage = 0.0f, leftVoltage = 0.0f, rightVoltage = 0.0f;
-                
-                if (frontHeight == backHeight && leftHeight == rightHeight) {
-                    //floor.raiseAll(0);
+
+                var direction = transform.position - lastPosition;
+                var localDirection = transform.InverseTransformDirection(direction);
+                Screenlog5 = "dir: " + localDirection;
+
+                if (frontHeight == backHeight && frontHeight == 0.0f && leftHeight == 0.0f && leftHeight == rightHeight) {
+                    floor.raiseAll(0);
                     Screenlog1 = "Going Straight";
                 }
                 // you're leaning to the right..
-                else if (leftHeight > rightHeight)
-                {
+                //else if (leftHeight > rightHeight)
+                else if (localDirection.x < 0)
+               {
+                    
                     rightVoltage = CalculateVoltage(rightHeight, MaxSway);
                     cartState = CartState.right;
                     Screenlog1 = "Going Right";
-                    //floor.raiseFront(rightVoltage);
+                    //floor.raiseLeft(rightVoltage);
                 }
                 //you're leaning to the left...
-                else if (rightHeight > leftHeight)
+                //else if (rightHeight > leftHeight)
+                else if (localDirection.x > 0) 
                 {
                     leftVoltage = CalculateVoltage(leftHeight, MaxSway);
                     cartState = CartState.left;
                     Screenlog1 = "Going Left";
-                    //floor.raiseFront(leftVoltage);
+                    //floor.raiseRight(leftVoltage);
                 }
                 //if you're going down, lower front and don't touch it
-                else if (backHeight > frontHeight || (frontHeight < 0 && backHeight > 0))
+                //else if (backHeight > frontHeight || (frontHeight < 0 && backHeight > 0))
+                else if (localDirection.y > 0) 
                 {
                     backVoltage = CalculateVoltage(backHeight, MaxHeight);
                     cartState = CartState.down;
@@ -160,7 +170,8 @@ public class MineCart : MonoBehaviour
                     //floor.raiseBack(backVoltage);
                 }
                 //if you're going up, lower back and don't touch it. 
-                else if (frontHeight > backHeight || (frontHeight > 0 && backHeight < 0))
+                //else if (frontHeight > backHeight || (frontHeight > 0 && backHeight < 0))
+                else if (localDirection.y < 0) 
                 {
                     frontVoltage = CalculateVoltage(frontHeight, MaxHeight);
                     cartState = CartState.up;
@@ -189,6 +200,9 @@ public class MineCart : MonoBehaviour
 
             RightLastHeight = RightCurrentHeight;
             LeftLastHeight = LeftCurrentHeight;
+
+            lastPosition = transform.position;
+
 
             yield return new WaitForSeconds(TimeToWaitBetweenFloorCommands);
 
