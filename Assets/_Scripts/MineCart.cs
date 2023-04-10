@@ -138,8 +138,24 @@ public class MineCart : MonoBehaviour
                 Screenlog5 = "dir: " + localDirection;
 
                 if (frontHeight == backHeight && frontHeight == 0.0f && leftHeight == 0.0f && leftHeight == rightHeight) {
-                    floor.raiseAll(0);
+                    //floor.raiseAll(0);
                     Screenlog1 = "Going Straight";
+                }
+                //if you're going down, lower front and don't touch it
+                //else if (backHeight > frontHeight || (frontHeight < 0 && backHeight > 0))
+                else if (localDirection.y > 0 && localDirection.x < localDirection.y) {
+                    backVoltage = CalculateVoltage(backHeight, MaxHeight);
+                    cartState = CartState.down;
+                    Screenlog1 = "Going down";
+                    //floor.raiseBack(backVoltage);
+                }
+                //if you're going up, lower back and don't touch it. 
+                //else if (frontHeight > backHeight || (frontHeight > 0 && backHeight < 0))
+                else if (localDirection.y < 0 && localDirection.x < localDirection.y) {
+                    frontVoltage = CalculateVoltage(frontHeight, MaxHeight);
+                    cartState = CartState.up;
+                    Screenlog1 = "Going up";
+                    //floor.raiseFront(frontVoltage);
                 }
                 // you're leaning to the right..
                 //else if (leftHeight > rightHeight)
@@ -160,24 +176,7 @@ public class MineCart : MonoBehaviour
                     Screenlog1 = "Going Left";
                     //floor.raiseRight(leftVoltage);
                 }
-                //if you're going down, lower front and don't touch it
-                //else if (backHeight > frontHeight || (frontHeight < 0 && backHeight > 0))
-                else if (localDirection.y > 0) 
-                {
-                    backVoltage = CalculateVoltage(backHeight, MaxHeight);
-                    cartState = CartState.down;
-                    Screenlog1 = "Going down";
-                    //floor.raiseBack(backVoltage);
-                }
-                //if you're going up, lower back and don't touch it. 
-                //else if (frontHeight > backHeight || (frontHeight > 0 && backHeight < 0))
-                else if (localDirection.y < 0) 
-                {
-                    frontVoltage = CalculateVoltage(frontHeight, MaxHeight);
-                    cartState = CartState.up;
-                    Screenlog1 = "Going up";
-                    //floor.raiseFront(frontVoltage);
-                }
+                
 
                 Screenlog2 = "Back Height: " + backHeight + " Front Height: " + frontHeight;
                 Screenlog3 = "back Voltage: " + backVoltage + " front voltage: " + frontVoltage;
