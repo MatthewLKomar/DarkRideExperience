@@ -7,7 +7,8 @@ public enum CartState
     left,
     right,
     down,
-    up
+    up,
+    straight
 }
 public class MineCart : MonoBehaviour
 {
@@ -24,6 +25,13 @@ public class MineCart : MonoBehaviour
 
 
     private FloorController floor = null;
+    private CartState cartState;
+
+    //MLKomar: Used to calculate if we're going straight or not
+    private float marginOfError = 0.01f;
+    private Vector3 lastPosition;
+    private int Count = 0;
+
 
     //height Up/Down
     private float MaxHeight = 20.0f;
@@ -32,17 +40,15 @@ public class MineCart : MonoBehaviour
     private float FrontCurrentHeight;
     private float BackCurrentHeight;
 
+    
 
-    private CartState cartState;
     //height left/right
     private float MaxSway = 3.0f;
     private float RightLastHeight;
     private float LeftLastHeight;
     private float RightCurrentHeight;
     private float LeftCurrentHeight;
-
-    private Vector3 lastPosition;
-    private int Count = 0 ;
+    
     
     private string Screenlog1 = "";
     private string Screenlog2 = "";
@@ -150,25 +156,31 @@ public class MineCart : MonoBehaviour
                      Screenlog1 = "Going down";
                      //floor.raiseBack(backVoltage);
                  }
-                 //if you're going up, lower back and don't touch it. 
-                 //else if (frontHeight > backHeight || (frontHeight > 0 && backHeight < 0))
-                 else if (localDirection.y < 0 && localDirection.x < localDirection.y) {
-                     frontVoltage = CalculateVoltage(frontHeight, MaxHeight);
-                     cartState = CartState.up;
-                     Screenlog1 = "Going up";
-                     //floor.raiseFront(frontVoltage);
-                 }*/
-                // you're leaning to the right..
-                //else if (leftHeight > rightHeight)
-
-                float marginOfError = 0.01f;
-                if (Mathf.Abs(localDirection.x-localDirection.y) <= marginOfError)
+                 */
+                if (Mathf.Abs(localDirection.x - localDirection.y) <= marginOfError)
                 {
                     Screenlog1 = "Going Straight";
+                    cartState = CartState.straight;
                 }
+                //going up
+                else if (localDirection.y < 0 && transform.position.y > lastPosition.y)
+                {
+                    frontVoltage = CalculateVoltage(frontHeight, MaxHeight);
+                    cartState = CartState.up;
+                    Screenlog1 = "Going up";
+                    //floor.raiseFront(frontVoltage);
+                }
+                //going down
+                else if (localDirection.y > 0 && transform.position.y < lastPosition.y)
+                {
+                    backVoltage = CalculateVoltage(backHeight, MaxHeight);
+                    cartState = CartState.down;
+                    Screenlog1 = "Going down";
+                    //floor.raiseBack(backVoltage);
+                }
+                //going right
                 else if (localDirection.x < 0)
                 {
-
                     rightVoltage = CalculateVoltage(rightHeight, MaxSway);
                     cartState = CartState.right;
                     Screenlog1 = "Going Right";
@@ -183,15 +195,14 @@ public class MineCart : MonoBehaviour
                     Screenlog1 = "Going Left";
                     //floor.raiseRight(leftVoltage);
                 }
-                
 
                 Screenlog2 = "Back Height: " + backHeight + " Front Height: " + frontHeight;
                 Screenlog3 = "back Voltage: " + backVoltage + " front voltage: " + frontVoltage;
                 Screenlog4 = "Left Height: " + leftHeight + " Right Height: " + rightHeight;
                 Screenlog3 = "left Voltage: " + leftVoltage + " right voltage: " + rightVoltage;
 
-                print(Screenlog2);
-                print(Screenlog3);
+               
+               
 
                 //yield return new WaitForSeconds(0.1f);
 
