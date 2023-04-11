@@ -134,8 +134,9 @@ public class MineCart : MonoBehaviour
                 float backVoltage = 0.0f, frontVoltage = 0.0f, leftVoltage = 0.0f, rightVoltage = 0.0f;
 
                 var direction = transform.position - lastPosition;
-                var localDirection = transform.InverseTransformDirection(direction);
-                Screenlog5 = "dir: " + localDirection;
+                var localDirection = transform.InverseTransformDirection(direction) * 100.0f;
+                
+                Screenlog5 = "dir: " + localDirection.x + " , " + localDirection.y + " , " + localDirection.z;
 
                 /* if (frontHeight == backHeight && frontHeight == 0.0f && leftHeight == 0.0f && leftHeight == rightHeight) {
                      //floor.raiseAll(0);
@@ -159,7 +160,9 @@ public class MineCart : MonoBehaviour
                  }*/
                 // you're leaning to the right..
                 //else if (leftHeight > rightHeight)
-                if (localDirection.x == 0 && localDirection.y == 0)
+
+                float marginOfError = 0.01f;
+                if (Mathf.Abs(localDirection.x-localDirection.y) <= marginOfError)
                 {
                     Screenlog1 = "Going Straight";
                 }
