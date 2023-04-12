@@ -28,13 +28,16 @@ public class MineCart : MonoBehaviour
     private CartState cartState;
 
     //MLKomar: Used to calculate if we're going straight or not
-    private float marginOfError = 0.01f;
+    private float marginOfErrorStraight = 0.001f;
+    private float marginOfErrorDirection = 0.001f;
     private Vector3 lastPosition;
     private int Count = 0;
 
 
+    public float MaxHeight = 2.0f;
+    public float MaxSway = 0.2f;
+
     //height Up/Down
-    private float MaxHeight = 20.0f;
     private float FrontLastHeight;
     private float BackLastHeight;
     private float FrontCurrentHeight;
@@ -43,7 +46,6 @@ public class MineCart : MonoBehaviour
     
 
     //height left/right
-    private float MaxSway = 3.0f;
     private float RightLastHeight;
     private float LeftLastHeight;
     private float RightCurrentHeight;
@@ -56,7 +58,7 @@ public class MineCart : MonoBehaviour
     private string Screenlog4 = "";
     private string Screenlog5 = "";
 
-
+    float backVoltage = 0.0f, frontVoltage = 0.0f, leftVoltage = 0.0f, rightVoltage = 0.0f;
 
     float Remap(float value, float from1, float to1, float from2, float to2)
     {
@@ -75,15 +77,15 @@ public class MineCart : MonoBehaviour
 
     void Start()
     {
-        //floor = FloorController.curr;
-        //// if we can't to the floor for some reason, quit
-        //if (floor == null)
-        //{
-        //    print("can't connect to the floor!!");
-        //    return;
-        //}
+        floor = FloorController.curr;
+        // if we can't to the floor for some reason, quit
+        if (floor == null)
+        {
+            print("can't connect to the floor!!");
+            return;
+        }
 
-        //floor.SetupFloor();
+        floor.SetupFloor();
 
         FrontCurrentHeight = Front.position.y;
         BackCurrentHeight = Back.position.y;
@@ -101,7 +103,7 @@ public class MineCart : MonoBehaviour
         LeftLastHeight = LeftCurrentHeight;
 
         StartCoroutine(raiseFloor());
-
+        StartCoroutine(sampleVoltage());
     }
 
     float CalculateVoltage(float heightVal, float maxVal)
@@ -113,10 +115,36 @@ public class MineCart : MonoBehaviour
     }
 
 
-    //TODO: MLKomar: Issues with raiseFloor()
-    // If left and right are almost equal than keep the previous state/turning values.
-    // Sometimes left > right or vice versa and the program still thinks we're turning right. 
-    // Make additive platform raising i.e. be tilted up and to the left slightly. 
+    IEnumerator sampleVoltage()
+    {
+        while (true)
+        {
+            switch (cartState)
+            {
+                case CartState.left:
+                    if (floor) floor.raiseLeft(leftVoltage);
+                    break;
+                case CartState.right:
+                    if (floor) floor.raiseRight(rightVoltage);
+                    break;
+                case CartState.down:
+                    if (floor) floor.raiseBack(backVoltage);
+                    break;
+                case CartState.up:
+                    if (floor) floor.raiseFront(frontVoltage);
+                    break;
+                case CartState.straight:
+                    break;
+            }
+
+            backVoltage = 0.0f;
+            frontVoltage = 0.0f;
+            leftVoltage = 0.0f;
+            rightVoltage = 0.0f;
+
+            yield return new WaitForSeconds(TimeToWaitBetweenFloorCommands);
+        }
+    }
 
 
     /// <summary>
@@ -125,6 +153,7 @@ public class MineCart : MonoBehaviour
     /// <returns></returns>
     IEnumerator raiseFloor() {
         while (true) {
+
             FrontCurrentHeight = Front.position.y;
             BackCurrentHeight = Back.position.y;
 
@@ -135,77 +164,54 @@ public class MineCart : MonoBehaviour
 
                 float frontHeight = FrontCurrentHeight - FrontLastHeight;
                 float backHeight = BackCurrentHeight - BackLastHeight;
-                float leftHeight = Mathf.Ceil(LeftCurrentHeight - LeftLastHeight);
-                float rightHeight = Mathf.Ceil(RightCurrentHeight - RightLastHeight);
-                float backVoltage = 0.0f, frontVoltage = 0.0f, leftVoltage = 0.0f, rightVoltage = 0.0f;
+                float leftHeight = LeftCurrentHeight - LeftLastHeight;
+                float rightHeight = RightCurrentHeight - RightLastHeight;
 
                 var direction = transform.position - lastPosition;
-                var localDirection = transform.InverseTransformDirection(direction) * 100.0f;
+                var localDirection = transform.InverseTransformDirection(direction);
                 
-                Screenlog5 = "dir: " + localDirection.x + " , " + localDirection.y + " , " + localDirection.z;
-
-                /* if (frontHeight == backHeight && frontHeight == 0.0f && leftHeight == 0.0f && leftHeight == rightHeight) {
-                     //floor.raiseAll(0);
-                     Screenlog1 = "Going Straight";
-                 }
-                 //if you're going down, lower front and don't touch it
-                 //else if (backHeight > frontHeight || (frontHeight < 0 && backHeight > 0))
-                 else if (localDirection.y > 0 && localDirection.x < localDirection.y) {
-                     backVoltage = CalculateVoltage(backHeight, MaxHeight);
-                     cartState = CartState.down;
-                     Screenlog1 = "Going down";
-                     //floor.raiseBack(backVoltage);
-                 }
-                 */
-                if (Mathf.Abs(localDirection.x - localDirection.y) <= marginOfError)
-                {
-                    Screenlog1 = "Going Straight";
-                    cartState = CartState.straight;
-                }
-                //going up
-                else if (localDirection.y < 0 && transform.position.y > lastPosition.y)
-                {
-                    frontVoltage = CalculateVoltage(frontHeight, MaxHeight);
-                    cartState = CartState.up;
-                    Screenlog1 = "Going up";
-                    //floor.raiseFront(frontVoltage);
-                }
-                //going down
-                else if (localDirection.y > 0 && transform.position.y < lastPosition.y)
-                {
-                    backVoltage = CalculateVoltage(backHeight, MaxHeight);
-                    cartState = CartState.down;
-                    Screenlog1 = "Going down";
-                    //floor.raiseBack(backVoltage);
-                }
                 //going right
-                else if (localDirection.x < 0)
+                if (localDirection.x < 0 && rightHeight != 0.0f && Mathf.Abs(transform.position.y - lastPosition.y) < 0.6f)
                 {
                     rightVoltage = CalculateVoltage(rightHeight, MaxSway);
                     cartState = CartState.right;
                     Screenlog1 = "Going Right";
-                    //floor.raiseLeft(rightVoltage);
+                    floor.raiseLeft(rightVoltage);
                 }
                 //you're leaning to the left...
-                //else if (rightHeight > leftHeight)
-                else if (localDirection.x > 0)
+                else if (localDirection.x > 0 && leftHeight != 0.0f && Mathf.Abs(transform.position.y - lastPosition.y) < 0.6f)
                 {
                     leftVoltage = CalculateVoltage(leftHeight, MaxSway);
                     cartState = CartState.left;
                     Screenlog1 = "Going Left";
-                    //floor.raiseRight(leftVoltage);
+                    floor.raiseRight(leftVoltage);
                 }
-
+                //going up
+                else if (localDirection.y < 0 || transform.position.y > lastPosition.y)
+                {
+                    frontVoltage = CalculateVoltage(frontHeight, MaxHeight);
+                    cartState = CartState.up;
+                    Screenlog1 = "Going up";
+                    floor.raiseFront(frontVoltage);
+                }
+                //going down
+                else if (localDirection.y > 0 || transform.position.y < lastPosition.y)
+                {
+                    backVoltage = CalculateVoltage(backHeight, MaxHeight);
+                    cartState = CartState.down;
+                    Screenlog1 = "Going down";
+                    floor.raiseBack(backVoltage);
+                }
+                else
+                {
+                    Screenlog1 = "Going Straight";
+                    cartState = CartState.straight;
+                }
+                
                 Screenlog2 = "Back Height: " + backHeight + " Front Height: " + frontHeight;
                 Screenlog3 = "back Voltage: " + backVoltage + " front voltage: " + frontVoltage;
                 Screenlog4 = "Left Height: " + leftHeight + " Right Height: " + rightHeight;
-                Screenlog3 = "left Voltage: " + leftVoltage + " right voltage: " + rightVoltage;
-
-               
-               
-
-                //yield return new WaitForSeconds(0.1f);
-
+                Screenlog5 = "left Voltage: " + leftVoltage + " right voltage: " + rightVoltage;
             }
             else {
                 Screenlog1 = "Waiting to get clean values...";
@@ -221,7 +227,7 @@ public class MineCart : MonoBehaviour
             lastPosition = transform.position;
 
 
-            yield return new WaitForSeconds(TimeToWaitBetweenFloorCommands);
+            yield return new WaitForSeconds(0.1f);
 
         }
 
