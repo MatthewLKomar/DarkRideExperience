@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameController : MonoBehaviour {
+public class RideGameController : MonoBehaviour {
 
     public int maxTime = 180;       // in seconds
     [Tooltip( "set to false when not in the cave")]

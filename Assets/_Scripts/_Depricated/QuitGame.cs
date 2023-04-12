@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Quit : MonoBehaviour {
+public class QuitGame : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

@@ -42,7 +42,7 @@ public class TriggerControl : MonoBehaviour {
 	public AudioSource audio;
     public CameraMovement2 move;
     public GameObject titleScreen;
-    public GameController gc;
+    public RideGameController gc;
     public GameObject tutorialVideo;
 
     private OSCController osc;

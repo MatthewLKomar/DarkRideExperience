@@ -8,7 +8,7 @@ public class TrackWaypoints : MonoBehaviour
     public GameObject[] points;
     public Text counterText;
     public CodeManager codeManager;
-    public GameController gc;
+    public RideGameController gc;
 
     private int counter = 0;
     private bool[] found;
