@@ -132,10 +132,10 @@ public class MineCart : MonoBehaviour
                 switch (cartState)
                 {
                     case CartState.left:
-                        floor.raiseLeft(leftVoltage);
+                        floor.raiseRight(leftVoltage);
                         break;
                     case CartState.right:
-                        floor.raiseRight(rightVoltage);
+                        floor.raiseLeft(rightVoltage);
                         break;
                     case CartState.down:
                         floor.raiseBack(backVoltage);
@@ -144,6 +144,7 @@ public class MineCart : MonoBehaviour
                         floor.raiseFront(frontVoltage);
                         break;
                     case CartState.straight:
+                        floor.raiseAll(0);
                         break;
                 }
             }
