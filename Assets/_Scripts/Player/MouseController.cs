@@ -16,13 +16,16 @@ public class MouseController : MonoBehaviour
 
 
     public GameObject Rotateable = null;
-    public float rotationStrength = 5.0f;
+    public float rotationStrengthX = 5.0f;
+    public float rotationStrengthY = 5.0f;
     void Update()
     {
 
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
-        Rotateable.transform.Rotate(-mouseY * rotationStrength * Time.deltaTime, mouseX * rotationStrength * Time.deltaTime,0.0f);
+        // add an aditional axis with a different sweet spot
+        
+        Rotateable.transform.Rotate(-mouseY * rotationStrengthY * Time.deltaTime, mouseX * rotationStrengthX * Time.deltaTime,0.0f);
         var x = Input.mousePosition.x;
         var y = Input.mousePosition.y;
         
