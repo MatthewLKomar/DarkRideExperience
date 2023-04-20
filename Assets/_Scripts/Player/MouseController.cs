@@ -19,12 +19,12 @@ public class MouseController : MonoBehaviour
     public float rotationStrength = 5.0f;
     void Update()
     {
+
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+        Rotateable.transform.Rotate(-mouseY * rotationStrength * Time.deltaTime, mouseX * rotationStrength * Time.deltaTime,0.0f);
         var x = Input.mousePosition.x;
         var y = Input.mousePosition.y;
-        if (oldMouseX - x != 0) {
-            var vec = new Vector3(-x, -y, 0.0f);
-            Rotateable.transform.Rotate(vec * Time.deltaTime * rotationStrength);
-        }
         
         oldMouseX = x;
         oldMouseY = y;
