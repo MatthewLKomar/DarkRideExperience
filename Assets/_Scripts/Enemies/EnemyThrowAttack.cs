@@ -7,8 +7,6 @@ public class EnemyThrowAttack : MonoBehaviour
 {
     public Transform Target;
     [SerializeField]
-    private Enemy Enemy;
-    [SerializeField]
     private Rigidbody AttackProjectile;
     [Range(0, 1)]
     [Tooltip("Using a values closer to 0 will make the agent throw with the lower force"
@@ -66,7 +64,6 @@ public class EnemyThrowAttack : MonoBehaviour
             out RaycastHit hit,
             float.MaxValue);
 
-        ///print((Time.time ));
         if ((Time.time > LastAttackTime + AttackDelay) && valid) {
             LastAttackTime = Time.time;
             AttackProjectile.transform.SetParent(transform, true);
@@ -110,8 +107,6 @@ public class EnemyThrowAttack : MonoBehaviour
         DoThrow(throwData);
 
         yield return null;
-        // resume movement the frame after the attack is launched
-        //Enemy.Movement.GoToRandomPoint();
     }
 
     private ThrowData GetPredictedPositionThrowData(ThrowData DirectThrowData)
