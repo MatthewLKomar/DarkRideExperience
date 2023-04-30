@@ -26,7 +26,7 @@ public class EnemyThrowAttack : MonoBehaviour
     private float AttackDelay = 5f;
 
     [SerializeField]
-    private bool UseMovementPrediction;
+    private bool UseMovementPrediction = true;
     public PredictionMode MovementPredictionMode;
     [Range(0.01f, 5f)]
     public float HistoricalTime = 1f;
@@ -39,7 +39,7 @@ public class EnemyThrowAttack : MonoBehaviour
 
     private CharacterController PlayerCharacterController;
     private float SpherecastRadius = 0.5f;
-    private float LastAttackTime;
+    private float LastAttackTime = 0.0f;
 
     private void Start()
     {
@@ -59,16 +59,15 @@ public class EnemyThrowAttack : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time > LastAttackTime + AttackDelay
-            && Physics.SphereCast(
-                transform.position,
-                SpherecastRadius,
-                (Target.transform.position + Vector3.up - transform.position).normalized,
-                out RaycastHit hit,
-                float.MaxValue,
-                SightLayers)
-            && hit.transform == Target)
-        {
+        bool valid = Physics.SphereCast(
+            transform.position,
+            SpherecastRadius,
+            (Target.transform.position - transform.position).normalized,
+            out RaycastHit hit,
+            float.MaxValue);
+
+        ///print((Time.time ));
+        if ((Time.time > LastAttackTime + AttackDelay) && valid) {
             LastAttackTime = Time.time;
             AttackProjectile.transform.SetParent(transform, true);
             AttackProjectile.transform.localPosition = new Vector3(0, 0, 1f);
@@ -87,7 +86,7 @@ public class EnemyThrowAttack : MonoBehaviour
 
     public IEnumerator Attack()
     {
-        Enemy.Movement.StopMoving();
+        //Enemy.Movement.StopMoving();
         transform.LookAt(Target);
         AttackProjectile.gameObject.SetActive(true);
         AttackProjectile.transform.SetParent(null, true);
@@ -112,7 +111,7 @@ public class EnemyThrowAttack : MonoBehaviour
 
         yield return null;
         // resume movement the frame after the attack is launched
-        Enemy.Movement.GoToRandomPoint();
+        //Enemy.Movement.GoToRandomPoint();
     }
 
     private ThrowData GetPredictedPositionThrowData(ThrowData DirectThrowData)

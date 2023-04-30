@@ -23,7 +23,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void GoToRandomPoint()
     {
-        StartCoroutine(DoMoveToRandomPoint());
+        //StartCoroutine(DoMoveToRandomPoint());
     }
 
     public void GoTowardsPlayer(Transform Player)
