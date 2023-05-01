@@ -5,9 +5,14 @@ using UnityEngine;
 
 public class GameState : MonoBehaviour
 {
+    //Gets defined manually.  
     public GameObject player = null;
+    
     public static GameState gameState;
-
+    
+    [Tooltip("Amount we damage the player by. Used in DecreaseHealth")]
+    public float DamagePlayerAmount = 35.0f;
+    public float CartHealth = 100.0f;
     private void Awake()
     {
         if (gameState != null && gameState != this)
@@ -18,5 +23,16 @@ public class GameState : MonoBehaviour
         {
             gameState = this;
         }
+    }
+
+    public void DecreaseHealth()
+    {
+        CartHealth -= DamagePlayerAmount;
+        //update the canvases... 
+        if (CartHealth <= 0.0f)
+        {
+            CanvasManager.canvasManager.ShowDamage(CartHealth);
+        }
+        
     }
 }
