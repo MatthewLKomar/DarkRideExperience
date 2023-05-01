@@ -13,30 +13,26 @@ public class MouseController : MonoBehaviour
 
     public GameObject Gun = null;
     public GameObject Shield = null;
-    public float player1RotationStrengthX = 5.0f;
-    public float player1RotationStrengthY = 5.0f;
+    public float player1RotationStrengthX = 0.8f;
+    public float player1RotationStrengthY = 0.6f;
 
-    public float player2RotationStrengthX = 5.0f;
-    public float player2RotationStrengthY = 5.0f;
+    public float player2RotationStrengthX = 50.0f;
+    public float player2RotationStrengthY = 50.0f;
 
     public bool isUsingController = true; 
     void Update()
     {
 
         float P1MouseX = 0.0f, P1MouseY = 0.0f, P2MouseX = 0.0f, P2MouseY = 0.0f;
-        //player 1 movement... 
-        if (isUsingController) {
-            P1MouseX = 0.0f;
-            P1MouseY = -Input.GetAxis("P1-VerticalLeft");
-            P2MouseX = 0.0f;
-            P2MouseY = -Input.GetAxis("P2-VerticalLeft");
+        //ring mouse
+        P1MouseX = Input.GetAxis("Mouse X");
+        P1MouseY = Input.GetAxis("Mouse Y");
+        if (isMultiplePlayers) { //second player
+            P2MouseX = Input.GetAxis("P1-HorizontalLeft");
+            P2MouseY = -Input.GetAxis("P1-VerticalLeft");
         }
-        else {
-            P1MouseX = Input.GetAxis("Mouse X");
-            P1MouseY = Input.GetAxis("Mouse Y");
-        }
-
-        //player 2 movement... 
+        
         Shield.transform.Rotate(-P1MouseY * player1RotationStrengthY * Time.deltaTime, P1MouseX * player1RotationStrengthX * Time.deltaTime,0.0f);
+        Gun.transform.Rotate(-P2MouseY * player2RotationStrengthY * Time.deltaTime, P2MouseX * player2RotationStrengthX * Time.deltaTime, 0.0f);
     }
 }
