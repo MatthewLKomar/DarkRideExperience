@@ -33,6 +33,7 @@ public class MouseController : MonoBehaviour
             P2MouseX = Input.GetAxis("P1-HorizontalLeft");
             P2MouseY = -Input.GetAxis("P1-VerticalLeft");
             Gun.transform.Rotate(-P2MouseY * player2RotationStrengthY * Time.deltaTime, P2MouseX * player2RotationStrengthX * Time.deltaTime, 0.0f);
+
         }
 
         
