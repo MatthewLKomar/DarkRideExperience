@@ -19,21 +19,21 @@ public class MouseController : MonoBehaviour
     public float player2RotationStrengthX = 5.0f;
     public float player2RotationStrengthY = 5.0f;
 
-    public bool isUsingController = true; 
+    public bool isMultiplePlayers = true; 
     void Update()
     {
 
         float P1MouseX = 0.0f, P1MouseY = 0.0f, P2MouseX = 0.0f, P2MouseY = 0.0f;
         //player 1 movement... 
-        if (isUsingController) {
-            P1MouseX = 0.0f;
-            P1MouseY = -Input.GetAxis("P1-VerticalLeft");
+        
+            P1MouseX = Input.GetAxis("Mouse X");
+            P1MouseY = Input.GetAxis("Mouse Y");
+        if (isMultiplePlayers) {
             P2MouseX = 0.0f;
             P2MouseY = -Input.GetAxis("P2-VerticalLeft");
         }
         else {
-            P1MouseX = Input.GetAxis("Mouse X");
-            P1MouseY = Input.GetAxis("Mouse Y");
+
         }
 
         //player 2 movement... 
