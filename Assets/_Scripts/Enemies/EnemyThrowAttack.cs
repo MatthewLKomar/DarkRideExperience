@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * MLK: This code has been taking (and modified slightly) from this youtube
+ * tutorial: https://www.youtube.com/watch?v=6YsamZNNwpQ&t=591s
+ * It's pretty good
+ */
+
+
 [DisallowMultipleComponent]
 public class EnemyThrowAttack : MonoBehaviour
 {
@@ -41,6 +48,11 @@ public class EnemyThrowAttack : MonoBehaviour
 
     private void Start()
     {
+        //MLKomar: If target is null, let's go to the game state and get the player as a target instead.
+        if (Target == null)
+        {
+            Target = GameState.gameState.player.transform; 
+        }
         AttackProjectile.useGravity = false;
         AttackProjectile.isKinematic = true;
         SpherecastRadius = AttackProjectile.GetComponent<SphereCollider>().radius;
