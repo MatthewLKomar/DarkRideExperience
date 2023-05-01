@@ -11,25 +11,32 @@ public class MouseController : MonoBehaviour
             -215 absolete down
      */
 
-    private float oldMouseX = 0.0f;
-    private float oldMouseY = 0.0f;
+    public GameObject Gun = null;
+    public GameObject Shield = null;
+    public float player1RotationStrengthX = 5.0f;
+    public float player1RotationStrengthY = 5.0f;
 
+    public float player2RotationStrengthX = 5.0f;
+    public float player2RotationStrengthY = 5.0f;
 
-    public GameObject Rotateable = null;
-    public float rotationStrengthX = 5.0f;
-    public float rotationStrengthY = 5.0f;
+    public bool isUsingController = true; 
     void Update()
     {
 
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
-        // add an aditional axis with a different sweet spot
-        
-        Rotateable.transform.Rotate(-mouseY * rotationStrengthY * Time.deltaTime, mouseX * rotationStrengthX * Time.deltaTime,0.0f);
-        var x = Input.mousePosition.x;
-        var y = Input.mousePosition.y;
-        
-        oldMouseX = x;
-        oldMouseY = y;
+        float P1MouseX = 0.0f, P1MouseY = 0.0f, P2MouseX = 0.0f, P2MouseY = 0.0f;
+        //player 1 movement... 
+        if (isUsingController) {
+            P1MouseX = 0.0f;
+            P1MouseY = -Input.GetAxis("P1-VerticalLeft");
+            P2MouseX = 0.0f;
+            P2MouseY = -Input.GetAxis("P2-VerticalLeft");
+        }
+        else {
+            P1MouseX = Input.GetAxis("Mouse X");
+            P1MouseY = Input.GetAxis("Mouse Y");
+        }
+
+        //player 2 movement... 
+        Shield.transform.Rotate(-P1MouseY * player1RotationStrengthY * Time.deltaTime, P1MouseX * player1RotationStrengthX * Time.deltaTime,0.0f);
     }
 }
