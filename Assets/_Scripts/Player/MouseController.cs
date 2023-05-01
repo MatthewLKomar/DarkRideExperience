@@ -19,7 +19,7 @@ public class MouseController : MonoBehaviour
     public float player2RotationStrengthX = 50.0f;
     public float player2RotationStrengthY = 50.0f;
 
-    public bool isUsingController = true; 
+    public bool isMultiplePlayers = true; 
     void Update()
     {
 
@@ -27,12 +27,14 @@ public class MouseController : MonoBehaviour
         //ring mouse
         P1MouseX = Input.GetAxis("Mouse X");
         P1MouseY = Input.GetAxis("Mouse Y");
+        Shield.transform.Rotate(-P1MouseY * player1RotationStrengthY * Time.deltaTime, P1MouseX * player1RotationStrengthX * Time.deltaTime, 0.0f);
+
         if (isMultiplePlayers) { //second player
             P2MouseX = Input.GetAxis("P1-HorizontalLeft");
             P2MouseY = -Input.GetAxis("P1-VerticalLeft");
+            Gun.transform.Rotate(-P2MouseY * player2RotationStrengthY * Time.deltaTime, P2MouseX * player2RotationStrengthX * Time.deltaTime, 0.0f);
         }
+
         
-        Shield.transform.Rotate(-P1MouseY * player1RotationStrengthY * Time.deltaTime, P1MouseX * player1RotationStrengthX * Time.deltaTime,0.0f);
-        Gun.transform.Rotate(-P2MouseY * player2RotationStrengthY * Time.deltaTime, P2MouseX * player2RotationStrengthX * Time.deltaTime, 0.0f);
     }
 }
