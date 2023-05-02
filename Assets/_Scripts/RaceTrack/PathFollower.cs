@@ -9,6 +9,19 @@ public class PathFollower : MonoBehaviour
     public float Speed = 10.0f;
     public float Distance = 0.0f;
     public bool Loop = true;
+
+    //MLKomar: this is a singleton because I am running into a bug and I want to go home and not deal with it rn
+    public static PathFollower follower;
+
+    private void Awake() {
+        if (follower != null && follower != this) {
+            Destroy(follower);
+        } else {
+            follower = this;
+        }
+    }
+
+
     private void FixedUpdate()
     {
         if (Racetrack == null) return;
