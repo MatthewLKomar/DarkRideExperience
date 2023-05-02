@@ -30,8 +30,10 @@ public class MouseController : MonoBehaviour
         Shield.transform.Rotate(-P1MouseY * player1RotationStrengthY * Time.deltaTime, P1MouseX * player1RotationStrengthX * Time.deltaTime, 0.0f);
 
         if (isMultiplePlayers) { //second player
-            P2MouseX = Input.GetAxis("P1-HorizontalLeft");
-            P2MouseY = -Input.GetAxis("P1-VerticalLeft");
+            //P2MouseX = Input.GetAxis("P1-HorizontalLeft");
+            //P2MouseY = -Input.GetAxis("P1-VerticalLeft");
+            P2MouseX = Input.GetAxis("Horizontal");
+            P2MouseY = Input.GetAxis("Vertical");
             //-P2MouseY * player2RotationStrengthY * Time.deltaTime
             Gun.transform.Rotate(0.0f, P2MouseX * player2RotationStrengthX * Time.deltaTime, 0.0f);
             var vec = Gun.transform.position;
