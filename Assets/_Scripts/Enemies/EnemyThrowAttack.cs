@@ -46,6 +46,9 @@ public class EnemyThrowAttack : MonoBehaviour
     private float SpherecastRadius = 0.5f;
     private float LastAttackTime = 0.0f;
 
+
+    public AudioClip audioClip = null;
+    private AudioSource audioSource = null;
     private void Start()
     {
         //MLKomar: If target is null, let's go to the game state and get the player as a target instead.
@@ -58,6 +61,8 @@ public class EnemyThrowAttack : MonoBehaviour
         SpherecastRadius = AttackProjectile.GetComponent<SphereCollider>().radius;
         LastAttackTime = Random.Range(0, 5);
 
+        audioSource = GetComponent<AudioSource>();
+
         int capacity = Mathf.CeilToInt(HistoricalResolution * HistoricalTime);
         HistoricalPositions = new Queue<Vector3>(capacity);
         for (int i = 0; i < capacity; i++)
@@ -69,22 +74,28 @@ public class EnemyThrowAttack : MonoBehaviour
 
     private void Update()
     {
-        bool valid = Physics.SphereCast(
+        if (Vector3.Distance(Target.transform.position, transform.position) <= 100.0f)
+        {
+            bool valid = Physics.SphereCast(
             transform.position,
             SpherecastRadius,
             (Target.transform.position - transform.position).normalized,
             out RaycastHit hit,
             float.MaxValue);
 
-        if ((Time.time > LastAttackTime + AttackDelay) && valid) {
-            LastAttackTime = Time.time;
-            AttackProjectile.transform.SetParent(transform, true);
-            AttackProjectile.transform.localPosition = new Vector3(0, 0, 1f);
-            AttackProjectile.useGravity = false;
-            AttackProjectile.velocity = Vector3.zero;
-            StartCoroutine(Attack());
-        }
+            if ((Time.time > LastAttackTime + AttackDelay) && valid)
+            {
+                LastAttackTime = Time.time;
+                AttackProjectile.transform.SetParent(transform, true);
+                AttackProjectile.transform.localPosition = new Vector3(0, 0, 1f);
+                AttackProjectile.useGravity = false;
+                AttackProjectile.velocity = Vector3.zero;
+                audioSource.PlayOneShot(audioClip);
+                StartCoroutine(Attack());
+            }
 
+  
+        }
         if (LastHistoryRecordedTime + HistoricalPositionInterval < Time.time)
         {
             LastHistoryRecordedTime = Time.time;
