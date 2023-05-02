@@ -20,6 +20,8 @@ public class Damage : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        GameState.gameState.DecreaseHealth();
+        if (other.transform == GameState.gameState.player.transform) {
+            GameState.gameState.DecreaseHealth();
+        }
     }
 }

@@ -27,12 +27,14 @@ public class GameState : MonoBehaviour
 
     public void DecreaseHealth()
     {
-        CartHealth -= DamagePlayerAmount;
         //update the canvases... 
-        if (CartHealth <= 0.0f)
+        if (CartHealth > 0.0f)
         {
+            CartHealth -= DamagePlayerAmount;
             CanvasManager.canvasManager.ShowDamage(CartHealth);
+            
+        } else {
+            //dead
         }
-        
     }
 }
