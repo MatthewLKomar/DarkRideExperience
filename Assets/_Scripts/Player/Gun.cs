@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    public AudioClip audio; 
+    public AudioClip audioClip; 
     private AudioSource audioSource = null;
     private void Start()
     {
@@ -17,7 +17,7 @@ public class Gun : MonoBehaviour
         if (/*Input.GetAxis("P1-RightBumper") != 0 || */Input.GetMouseButtonDown(0)) {
             bool hit = Physics.Raycast(transform.position,transform.TransformDirection(Vector3.left), out RaycastHit impact);
             if (hit && impact.transform.tag == "Enemy") {
-                audioSource.PlayOneShot(audio);
+                audioSource.PlayOneShot(audioClip);
                 Destroy(impact.transform.gameObject);
             }
         }
