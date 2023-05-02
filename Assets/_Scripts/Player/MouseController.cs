@@ -36,12 +36,13 @@ public class MouseController : MonoBehaviour
             P2MouseY = Input.GetAxis("Vertical");
             //-P2MouseY * player2RotationStrengthY * Time.deltaTime
             Gun.transform.Rotate(0.0f, P2MouseX * player2RotationStrengthX * Time.deltaTime, 0.0f);
-            var vec = Gun.transform.position;
+            var vec = Gun.transform.localPosition;
             vec.y += P2MouseY * 0.05f;
-            if (vec.y < 5.5f && vec.y > -5.8f)
-                Gun.transform.position = vec;
+            //Todo instead of using rotations use X and Y movement only and then rotate when we get beyond
+            //a certain amount of X value. 
+            if (vec.y < 2.0f && vec.y > -2.0f)
+                Gun.transform.localPosition = vec;
         }
-
         
     }
 }
