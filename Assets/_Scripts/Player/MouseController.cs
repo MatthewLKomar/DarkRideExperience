@@ -36,7 +36,7 @@ public class MouseController : MonoBehaviour
             Gun.transform.Rotate(0.0f, P2MouseX * player2RotationStrengthX * Time.deltaTime, 0.0f);
             var vec = Gun.transform.position;
             vec.y += P2MouseY * 0.05f;
-            if (vec.y < 3.5f && vec.y > 0.8f)
+            if (vec.y < 5.5f && vec.y > -5.8f)
                 Gun.transform.position = vec;
         }
 
