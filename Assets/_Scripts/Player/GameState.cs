@@ -13,6 +13,10 @@ public class GameState : MonoBehaviour
     [Tooltip("Amount we damage the player by. Used in DecreaseHealth")]
     public float DamagePlayerAmount = 35.0f;
     public float CartHealth = 100.0f;
+
+    public AudioClip win;
+    public AudioClip lose;
+    private AudioSource source; 
     private void Awake()
     {
         if (gameState != null && gameState != this)
@@ -23,8 +27,23 @@ public class GameState : MonoBehaviour
         {
             gameState = this;
         }
+
+        source = GetComponent<AudioSource>();
     }
 
+    //MLKomar: Are ya winning son?
+    public void EndGame(bool didWin)
+    {
+        if (didWin)
+        {
+            source.PlayOneShot(win);
+        }
+        else
+        {
+            source.PlayOneShot(lose);
+        }
+    }
+    
     public void DecreaseHealth()
     {
         //update the canvases... 
@@ -33,8 +52,10 @@ public class GameState : MonoBehaviour
             CartHealth -= DamagePlayerAmount;
             CanvasManager.canvasManager.ShowDamage(CartHealth);
             
-        } else {
-            //dead
+        } else
+        {
+            PathFollower.follower.Speed = 0.0f;
+            EndGame(false); 
         }
     }
 }
